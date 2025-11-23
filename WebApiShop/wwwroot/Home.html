@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <script src="Home.js" defer></script>
+    <script src="Password.js" defer></script>
+    <title>דף שיצרנו לבד</title>
+    <style>
+        .content {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .existUser {
+            display: flex;
+            flex-direction: column;
+            width: 20vw;
+            margin: 2vw;
+        }
+
+        .newUser {
+            display: flex;
+            flex-direction: column;
+            width: 20vw;
+            margin: 2vw;
+        }
+
+        button {
+            margin-top: 1vh;
+        }
+        .strength {
+            height: 2vh;
+            width: 20vw;
+            margin: 2vw;
+            background-color: gray;
+            border-radius: 10px;
+        }
+
+        .progressBar {
+            width: 20vw;
+            height:3vh;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="content">
+        <div class="existUser">
+            <h3>משתמש רשום</h3>
+            <lable for="userN">שם משתמש</lable>
+            <input type="email" id="userN" required />
+            <lable for="pass">סיסמא</lable>
+            <input type="password" id="pass" required />
+            <button onClick="login()" class="button">שליחה</button>
+        </div>
+
+        <div class="newUser">
+            <h3>משתמש חדש</h3>
+            <lable for="userName">שם משתמש</lable>
+            <input type="email" id="userName" name="userName" required />
+            <lable for="firstName">שם פרטי</lable>
+            <input type="text" id="firstName" name="firstName" required />
+            <lable for="lastName">שם משפחה</lable>
+            <input type="text" id="lastName" name="lastName" required />
+            <lable for="password">סיסמא</lable>
+            <input type="password" id="password" name="password" required />
+            <button onClick="checkPasswordLevel()" class="check">בדוק רמת סיסמא</button>
+            <progress class="progressBar" max="100" value="0"></progress>
+            <!--<div class="strength"></div>-->
+            <button onClick="postResponse()" class="button">שליחה</button>
+        </div>
+
+    </div>
+
+</body>
+</html>
