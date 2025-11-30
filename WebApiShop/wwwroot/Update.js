@@ -18,11 +18,11 @@ const updateResponse = async () => {
 
     const postData = {
 
-        userName: userN.value,
-        fName: fName.value,
-        lName: lName.value,
-        passWord: pass.value,
-        id: userData.id
+        UserEmail: userN.value,
+        FirstName: fName.value,
+        LastName: lName.value,
+        Password: pass.value,
+        Id: userData.id
     };
 
 

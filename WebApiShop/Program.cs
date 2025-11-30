@@ -1,10 +1,10 @@
-﻿using Repository;
+﻿using Microsoft.EntityFrameworkCore;
+using Repository;
 using Services;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddDbContext<WebApiShop216328971Context>(options => options.UseSqlServer("Data Source=srv2\\pupils;Initial Catalog=ApiShop216328971;Integrated Security=True;Trust Server Certificate=True; Pooling=False"));
 
 builder.Services.AddControllers();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -25,3 +25,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+

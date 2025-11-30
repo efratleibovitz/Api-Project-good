@@ -12,25 +12,25 @@ namespace Services
             _userRepository = userRepository;
             _passwordService = passwordService;
         }
-        public User GetUserById(int id)
+        public async Task<User> GetUserById(int id)
         {
-            return _userRepository.GetUserById(id);
+            return await _userRepository.GetUserById(id);
         }
-        public User addUser(User user)
+        public async Task<User> addUser(User user)
         {
-            if (_passwordService.Level(user.passWord).Strength <= 2)
+            if (_passwordService.Level(user.Password).Strength <= 2)
                 return null;
             
-            return _userRepository.addUser(user);
+            return await _userRepository.addUser(user);
         }
         public void updateUser(int id, User user)
         {
             _userRepository.updateUser(id, user);
 
         }
-        public User login(User user)
+        public async Task<User> login(User user)
         {
-            return _userRepository.login(user);
+            return await _userRepository.login(user);
         }
     }
 }
