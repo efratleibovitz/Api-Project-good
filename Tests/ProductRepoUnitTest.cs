@@ -27,12 +27,12 @@ namespace Tests
             var repo = new ProductRepository(mockContext.Object);
 
             // Act
-            var result = await repo.GetProducts(null, null, null, null, null);
+            var result = await repo.GetProducts(null, null, 0, 0, null, null, null, null);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(2, result.Count);
-            Assert.Equal("Cake", result[0].ProductName);
+            Assert.Equal(2, result.TotalCount);
+            Assert.Equal("Cake", result.Items[0].ProductName);
         }
 
         #endregion
@@ -50,11 +50,11 @@ namespace Tests
             var repo = new ProductRepository(mockContext.Object);
 
             // Act
-            var result = await repo.GetProducts(null, null, null, null, null);
+            var result = await repo.GetProducts(null, null, 0, 0, null, null, null, null);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Empty(result);
+            Assert.Empty(result.Items);
         }
         #endregion
     }

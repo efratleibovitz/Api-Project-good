@@ -20,9 +20,9 @@ namespace Services
             _mapper = mapper;
 
         }
-        public async Task<List<productDto>> GetProducts(int? pId, string? name, float? price, int? CategoryId, string? desc)
+        public async Task<List<productDto>> GetProducts(int? pId, string? name, int position, int skip, float? minPrice, float? maxPrice, string? desc, int?[] categoryIds)
         {
-            List<Product> listProduct =await _productRepository.GetProducts(pId, name, price, CategoryId, desc);
+            (List<Product>,int) listProduct =await _productRepository.GetProducts(pId, name, position,skip,minPrice,maxPrice, desc,categoryIds);
             List<productDto> listProductDto = _mapper.Map<List<productDto>>(listProduct);
             return listProductDto;
         }

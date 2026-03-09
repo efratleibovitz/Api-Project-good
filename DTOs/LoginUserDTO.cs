@@ -6,17 +6,9 @@ using System.Threading.Tasks;
 
 namespace DTOs
 {
-    public record UserDto
+     public record LoginUserDTO
     (
-        int id,
-
         string UserEmail,
-
-        string FirstName,
-
-        string LastName
-
+        string Password
     );
-
-    
 }

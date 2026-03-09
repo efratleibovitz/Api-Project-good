@@ -6,17 +6,13 @@ using System.Threading.Tasks;
 
 namespace DTOs
 {
-    public record UserDto
+    public record UpdateUser
     (
-        int id,
-
+        //int Id,
         string UserEmail,
-
         string FirstName,
-
-        string LastName
-
+        string LastName,
+        string Password
+     
     );
-
-    
 }

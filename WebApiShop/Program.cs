@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using NLog.Web;
 using Repository;
 using Services;
+using WebApiShop.Middlewares;
+
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseNLog();
 
@@ -23,9 +26,13 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IRatingRepository, RatingRepository>();
+builder.Services.AddScoped<IRatingService, RatingService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 var app = builder.Build();
+app.UseErrorHandlingMiddleware();
+app.UseRating();
 
 var logger = NLog.LogManager.GetCurrentClassLogger();
 logger.Info("Application started (env={env})", app.Environment.EnvironmentName);
