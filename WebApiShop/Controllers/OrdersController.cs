@@ -5,6 +5,7 @@ using Entities;
 using Repository;
 using Services;
 using DTOs;
+using AutoMapper;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,9 +17,11 @@ namespace WebApiShop.Controllers
     {
 
         IOrderService _orderService;
-        public OrdersController(IOrderService orderService)
+        IMapper _mapper;
+        public OrdersController(IOrderService orderService,IMapper mapper)
         {
             _orderService = orderService;
+            _mapper = mapper;
         }
 
         // GET: api/<UsersController>
@@ -40,17 +43,19 @@ namespace WebApiShop.Controllers
         }
         // POST api/<UsersController>
         [HttpPost]
-        public async Task<ActionResult<OrderDto>> Post([FromBody] Order order)
-        { 
-            OrderDto _order = await _orderService.addOrder(order);
-            if (_order == null)
-            {
-                return BadRequest("order added");
-            }
-            return CreatedAtAction(nameof(Get), new { id = order.OrderId }, order);
+        public async Task<ActionResult<OrderDto>> Post([FromBody] OrderDto orderDto) // שינוי כאן
+        {
+            // הפיכת ה-DTO לישות בעזרת Mapper לפני השליחה לסרוויס
+            Order orderEntity = _mapper.Map<Order>(orderDto);
 
+            OrderDto newOrderDto = await _orderService.addOrder(orderEntity);
+
+            if (newOrderDto == null)
+                return BadRequest();
+
+            return CreatedAtAction(nameof(Get), new { id = newOrderDto.orderId }, newOrderDto);
         }
 
-   
+
     }
 }

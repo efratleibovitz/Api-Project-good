@@ -1,17 +1,18 @@
 ﻿using System.Reflection.Metadata;
 using System.Text.Json;
+using DTOs;
 using Entities;
 using Microsoft.EntityFrameworkCore;
 namespace Repository
 {
     public class UserRepository : IUserRepository
     {
-        WebApiShop216328971Context _shopContext;
+        private readonly WebApiShop216328971Context _shopContext;
         public UserRepository(WebApiShop216328971Context userRepository)
         {
             _shopContext = userRepository;
         }
-        public async Task<User> GetUserById(int id)
+        public async Task<User?> GetUserById(int id)
         {
             return await _shopContext.Users.FirstOrDefaultAsync(u => u.Id == id);
         }
@@ -25,26 +26,40 @@ namespace Repository
             return user;
         }
 
- 
-        public async Task<User?> updateUser(User user)
+
+        //public async Task<User?> UpdateUser(User user)
+        //{
+        //    var existingUser = await _shopContext.Users
+        //        .FirstOrDefaultAsync(u => u.Id == user.Id);
+
+        //    if (existingUser == null)
+        //        return null;
+
+        //    existingUser.FirstName = user.FirstName;
+        //    existingUser.LastName = user.LastName;
+        //    existingUser.UserEmail = user.UserEmail;
+
+        //    await _shopContext.SaveChangesAsync();
+        //    return existingUser;
+        //}
+        public async Task UpdateUser(int id, UserDto userDto)
         {
-            var existingUser = await _shopContext.Users
-                .FirstOrDefaultAsync(u => u.Id == user.Id);
+            //_webApiShopContext.Users.Update(user);
+            User? user = await _shopContext.Users.FirstOrDefaultAsync(u => u.Id == id);
 
-            if (existingUser == null)
-                return null;
+            if (user == null)
+                return;
 
-            existingUser.FirstName = user.FirstName;
-            existingUser.LastName = user.LastName;
-            existingUser.UserEmail = user.UserEmail;
+            user.UserEmail = userDto.UserName;
+            user.FirstName = userDto.FirstName;
+            user.LastName = userDto.LastName;
+            user.Password = userDto.Password;
 
             await _shopContext.SaveChangesAsync();
-            return existingUser;
         }
-
-        public async Task<User> login(User user)
+        public async Task<User?> login(LoginDTO loginDto)
         {
-             return await _shopContext.Users.FirstOrDefaultAsync(x => x.UserEmail == user.UserEmail && x.Password == user.Password);     
+             return await _shopContext.Users.FirstOrDefaultAsync(x => x.UserEmail == loginDto.UserEmail && x.Password == loginDto.Password);     
 
         }
     }

@@ -4,6 +4,6 @@ namespace Services
 {
     public interface IPasswordService
     {
-        PasswordEntity Level(string password);
+        Task<PasswordEntity> CheckPasswordStrength(string password);
     }
 }

@@ -13,5 +13,9 @@ namespace DTOs
         double? Quantity,
 
         string ProductName
-    );
+    )
+    {
+        public OrderItemDto() : this( default, default, default) { }
+
+    }
 }

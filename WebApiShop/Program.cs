@@ -15,7 +15,10 @@ builder.Services.AddDbContext<WebApiShop216328971Context>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection")
     ));
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+}); 
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -31,7 +34,7 @@ builder.Services.AddScoped<IRatingService, RatingService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 var app = builder.Build();
-app.UseErrorHandlingMiddleware();
+//app.UseErrorHandlingMiddleware();
 app.UseRating();
 
 var logger = NLog.LogManager.GetCurrentClassLogger();

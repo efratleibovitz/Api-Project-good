@@ -31,7 +31,7 @@ namespace Tests
             await _context.SaveChangesAsync();
 
             // Act
-            var result = await _repository.GetProducts(null, null, 0, 0, null,null,null,null);
+            var result = await _repository.GetProducts( 0, 0, null, null,null, null,, null,null);
 
             // Assert
             Assert.NotNull(result);

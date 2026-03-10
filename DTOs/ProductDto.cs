@@ -16,7 +16,10 @@ namespace DTOs
 
          string Description,
 
-         string Category_Name 
+         string Category_Name
 
-    );
+    )
+    {
+        public productDto() : this(default, default, default, default, default) { }
+    }
 }

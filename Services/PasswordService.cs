@@ -9,7 +9,7 @@ namespace Services
 {
     public class PasswordService : IPasswordService
     {
-        public PasswordEntity Level(string password)
+        public async Task<PasswordEntity> CheckPasswordStrength(string password)
         {
             var _result = Zxcvbn.Core.EvaluatePassword(password);
             int _levelPass = _result.Score;

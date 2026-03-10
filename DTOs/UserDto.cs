@@ -8,15 +8,14 @@ namespace DTOs
 {
     public record UserDto
     (
-        int id,
+      string UserName,
 
-        string UserEmail,
+      string FirstName,
 
-        string FirstName,
+      string LastName,
 
-        string LastName
+      string Password
 
     );
-
     
 }

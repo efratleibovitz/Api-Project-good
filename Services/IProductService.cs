@@ -5,7 +5,6 @@ namespace Services
 {
     public interface IProductService
     {
-        Task<List<productDto>> GetProducts(int? pId, string? name, int position, int skip, float? minPrice, float? maxPrice, string? desc, int?[] categoryIds);
-
+        Task<List<productDto>> GetProducts(int position, int skip, int? Product_Id, string? name, float? minPrice, float? maxPrice, int[]? CategoryIds, string? description);
     }
 }

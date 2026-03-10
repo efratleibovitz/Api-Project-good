@@ -9,7 +9,7 @@ namespace WebApiShop.Controllers
     [ApiController]
     public class PasswordController : ControllerBase
     {
-        IPasswordService _pass;
+        private readonly IPasswordService _pass;
         public PasswordController(IPasswordService pass)
         {
             _pass = pass;
@@ -31,10 +31,10 @@ namespace WebApiShop.Controllers
 
         // POST api/<PasswordController>
         [HttpPost]
-        public ActionResult<string> Post([FromBody] string pass)
+        public async Task<ActionResult<int>> Post([FromBody] string pass)
         {
 
-            PasswordEntity _passWord = _pass.Level(pass);
+            PasswordEntity _passWord = await _pass.CheckPasswordStrength(pass);
             if (_passWord == null)
                 return NoContent();
 

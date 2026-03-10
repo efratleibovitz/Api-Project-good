@@ -5,11 +5,17 @@
         int orderId,
         DateOnly? OrderDate,
 
-        double OrderSum ,
+        double OrderSum,
 
         int UserId
 
     //    ICollection<OrderItem> OrderItems= new List<OrderItem>()
 
-    );
+    )
+    {
+        public OrderDto() : this( default, default, default, default) { }
+
+    }
+
+
 }

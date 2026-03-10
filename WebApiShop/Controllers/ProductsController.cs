@@ -22,10 +22,11 @@ namespace WebApiShop.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<productDto>>> Get(int? pId, string? name, int position, int skip, float? minPrice, float? maxPrice, string? desc, int?[] categoryIds)
+        public async Task<ActionResult<List<productDto>>> Get([FromQuery] int position, [FromQuery] int skip, [FromQuery] int? productId,
+            [FromQuery] string? name, [FromQuery] float? minPrice, [FromQuery] float? maxPrice, [FromQuery] int[]? categoryIds, [FromQuery] string? descripion)
         {
            
-            List<productDto> product= await _productService.GetProducts(pId, name, position, skip, minPrice, maxPrice, desc, categoryIds);
+            List<productDto> product= await _productService.GetProducts(position,skip, productId, name,  minPrice, maxPrice, categoryIds,descripion);
             if (product == null)
                    return NoContent();
             return Ok(product);
