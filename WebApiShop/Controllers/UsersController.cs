@@ -24,13 +24,6 @@ namespace WebApiShop.Controllers
 
         }
 
-        // GET: api/<UsersController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
         // GET api/<UsersController>/5
         [HttpGet("{id}")]
         public async Task<ActionResult<GetUserDTO>> Get(int id)
@@ -80,10 +73,5 @@ namespace WebApiShop.Controllers
             return Ok(user);
         }
 
-        // DELETE api/<UsersController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }

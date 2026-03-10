@@ -1,4 +1,5 @@
-﻿using Entities;
+﻿using DTOs;
+using Entities;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Moq.EntityFrameworkCore;
@@ -50,13 +51,16 @@ namespace Tests
         {
             // Arrange
             var user = new User { UserEmail = "u@u.com", Password = "123" };
-            var users = new List<User> {user};
+            var users = new List<User> { user };
             var mockContext = new Mock<WebApiShop216328971Context>();
             mockContext.Setup(x => x.Users).ReturnsDbSet(users);
             var repo = new UserRepository(mockContext.Object);
 
+            // יצירת ה-DTO שהפונקציה מצפה לו
+            var loginDto = new LoginDTO("u@u.com", "123");
+
             // Act
-            var result = await repo.login(user);
+            var result = await repo.login(loginDto); // כאן העדכון
 
             // Assert
             Assert.NotNull(result);
@@ -72,7 +76,10 @@ namespace Tests
             var repo = new UserRepository(mockContext.Object);
 
             // Act
-            var result = await repo.login(new User { UserEmail = "fake@test.com", Password = "0000" });
+            // אנחנו יוצרים DTO עם פרטים שלא תואמים את מה שיש ב-Mock (למשל אימייל אחר)
+            var loginDto = new LoginDTO("fake@test.com", "0000");
+
+            var result = await repo.login(loginDto);
 
             // Assert
             Assert.Null(result);
@@ -81,20 +88,21 @@ namespace Tests
         public async Task UpdateAsync_ValidUpdate_ReturnsUpdatedUser()
         {
             // Arrange
-            var user = new User {Id = 1, FirstName = "OldName", UserEmail = "u@u.com" };
+            var user = new User { Id = 1, FirstName = "OldName", UserEmail = "u@u.com", Password = "123" };
             var mockContext = new Mock<WebApiShop216328971Context>();
             mockContext.Setup(x => x.Users).ReturnsDbSet(new List<User> { user });
             var repo = new UserRepository(mockContext.Object);
 
+            // יצירת ה-DTO
+            var userDto = new UserDto("u@u.com", "NewName", "LastName", "123");
+
             // Act
-            user.FirstName = "NewName";
-            var result = await repo.updateUser(user);
+            await repo.UpdateUser(1, userDto); // שליחת ID ו-DTO
 
             // Assert
-            Assert.Equal("NewName", result.FirstName);
+            Assert.Equal("NewName", user.FirstName);
             mockContext.Verify(m => m.SaveChangesAsync(default), Times.Once);
         }
-
         #endregion
 
         #region unhappy tests
@@ -136,11 +144,8 @@ namespace Tests
             var repo = new UserRepository(mockContext.Object);
 
             // Act
-            var result = await repo.login(new User
-            {
-                UserEmail = "test@test.com",
-                Password = "WRONG"
-            });
+            var loginDto = new LoginDTO("test@test.com", "WRONG");
+            var result = await repo.login(loginDto);
 
             // Assert
             Assert.Null(result);
@@ -162,23 +167,24 @@ namespace Tests
 
         // עדכון משתמש שלא קיים
         [Fact]
-        public async Task UpdateUser_NotExistingUser_ReturnsNull()
+        public async Task UpdateUser_NotExistingUser_DoesNotThrowAndDoesNotSave()
         {
             // Arrange
-            var users = new List<User>();
+            var users = new List<User>(); // רשימה ריקה - המשתמש לא קיים
 
-            var mockContext =
-                GetMockContext<WebApiShop216328971Context, User>(users, c => c.Users);
-
+            var mockContext = GetMockContext<WebApiShop216328971Context, User>(users, c => c.Users);
             var repo = new UserRepository(mockContext.Object);
 
-            var user = new User { Id = 99, FirstName = "X" };
+            // יצירת DTO לצורך הבדיקה
+            var userDto = new UserDto("test@test.com", "X", "Y", "1234");
 
             // Act
-            var result = await repo.updateUser(user);
+            // אנחנו קוראים לפונקציה עם ID שלא קיים (99)
+            await repo.UpdateUser(99, userDto);
 
             // Assert
-            Assert.Null(result);
+            // מכיוון שהפונקציה לא מחזירה ערך, אנחנו מוודאים שהיא לא ניסתה לשמור שינויים ב-DB
+            mockContext.Verify(m => m.SaveChangesAsync(default), Times.Never);
         }
 
 

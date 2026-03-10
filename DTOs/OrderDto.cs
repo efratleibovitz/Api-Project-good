@@ -7,13 +7,14 @@
 
         double OrderSum,
 
-        int UserId
+        int UserId,
+        ICollection<OrderItemDto> OrderItems
 
     //    ICollection<OrderItem> OrderItems= new List<OrderItem>()
 
     )
     {
-        public OrderDto() : this( default, default, default, default) { }
+        public OrderDto() : this( default, default, default, default, default) { }
 
     }
 

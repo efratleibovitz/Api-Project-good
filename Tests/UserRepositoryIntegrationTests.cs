@@ -8,6 +8,7 @@ namespace Tests
     using Repository;
     using Microsoft.EntityFrameworkCore;
     using Tests;
+    using DTOs;
 
     public class UserRepositoryIntegrationTests : IClassFixture<DbFixture>
     {
@@ -50,8 +51,8 @@ namespace Tests
 
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
-
-            var result = await _repository.login(user);
+            var loginDto = new LoginDTO(user.UserEmail, user.Password);
+            var result = await _repository.login(loginDto);
 
             Assert.NotNull(result);
             Assert.Equal("login@integration.com", result.UserEmail);
@@ -81,8 +82,8 @@ namespace Tests
                 UserEmail = "fail@test.com",
                 Password = "wrong"
             };
-
-            var result = await _repository.login(loginAttempt);
+            var loginDto = new LoginDTO("fail@test.com", "wrong");
+            var result = await _repository.login(loginDto);
 
             Assert.Null(result);
         }
@@ -105,14 +106,10 @@ namespace Tests
         public async Task Login_EmailNotExists_ReturnsNull()
         {
             // Arrange
-            var user = new User
-            {
-                UserEmail = "notexist@test.com",
-                Password = "123"
-            };
+            var loginDto = new LoginDTO("notexist@test.com", "123");
 
             // Act
-            var result = await _repository.login(user);
+            var result = await _repository.login(loginDto);
 
             // Assert
             Assert.Null(result);

@@ -15,19 +15,8 @@ namespace WebApiShop.Controllers
             _pass = pass;
         }
 
-        // GET: api/<PasswordController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+      
 
-        // GET api/<PasswordController>/5
-        [HttpGet("{pass}")]
-        public void Get(string pass)
-        {
-            
-        }
 
         // POST api/<PasswordController>
         [HttpPost]
@@ -41,16 +30,5 @@ namespace WebApiShop.Controllers
             return Ok(_passWord.Strength);
         }
 
-        // PUT api/<PasswordController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<PasswordController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }

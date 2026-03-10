@@ -106,6 +106,7 @@ public partial class WebApiShop216328971Context : DbContext
                 .IsRequired()
                 .HasMaxLength(30)
                 .IsFixedLength();
+            entity.HasIndex(e => e.UserEmail).IsUnique();
         });
 
         modelBuilder.Entity<Rating>(entity =>

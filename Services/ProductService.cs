@@ -13,6 +13,9 @@ namespace Services
         IProductRepository _productRepository;
         //AutoMapper _mapper;
         IMapper _mapper;
+        private readonly WebApiShop216328971Context _shopContext;
+
+
 
         public ProductService(IProductRepository productRepository, IMapper mapper)
         {
@@ -26,6 +29,8 @@ namespace Services
             List<productDto> listProductDto = _mapper.Map<List<productDto>>(listProduct);
             return listProductDto;
         }
+
+       
 
     }
 }

@@ -2,18 +2,21 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Entities;
 
 public partial class User
 {
     public int Id { get; set; }
+    [EmailAddress]
+    [Required]
     public string UserEmail { get; set; }
 
     public string FirstName { get; set; }
 
     public string LastName { get; set; }
-
+    [Required]
     public string Password { get; set; }
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();

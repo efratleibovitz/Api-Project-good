@@ -24,13 +24,7 @@ namespace WebApiShop.Controllers
             _mapper = mapper;
         }
 
-        // GET: api/<UsersController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
+       
         // GET api/<UsersController>/5
         [HttpGet("{id}")]
         public async Task<ActionResult<OrderDto>> Get(int id)
@@ -53,7 +47,8 @@ namespace WebApiShop.Controllers
             if (newOrderDto == null)
                 return BadRequest();
 
-            return CreatedAtAction(nameof(Get), new { id = newOrderDto.orderId }, newOrderDto);
+            return CreatedAtAction(nameof(Get), new { id = newOrderDto.orderId },
+                new { Message = $"הזמנה מספר {newOrderDto.orderId} בוצעה בהצלחה!", Data = newOrderDto });
         }
 
 

@@ -22,7 +22,6 @@ namespace Services
             //CreateMap<Order, OrderDto>().ReverseMap();
             CreateMap<Category, CategoryDto>().ReverseMap();
             CreateMap<OrderItem, OrderItemDto>()
-                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName))
                 .ReverseMap();
             CreateMap<Order, OrderDto>()
                 .ForMember(dest => dest.OrderSum, opt => opt.MapFrom(src => src.OrederSum)) // מגשר על טעות הכתיב
