@@ -26,6 +26,11 @@ namespace Repository
             return user;
         }
 
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        {
+            return await _shopContext.Users.ToListAsync();
+        }
+
 
         //public async Task<User?> UpdateUser(User user)
         //{

@@ -1,13 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
-using static WebApiShop.Controllers.UsersController;
-using Entities;
-using Repository;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Services;
 using DTOs;
-
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WebApiShop.Controllers
 {
@@ -16,62 +10,91 @@ namespace WebApiShop.Controllers
     public class UsersController : ControllerBase
     {
         private readonly ILogger<UsersController> _logger;
-        private readonly IUserService _userService ;
-        public UsersController(IUserService userService, ILogger<UsersController> logger)
+        private readonly IUserService _userService;
+        private readonly IConfiguration _configuration;
+
+        public UsersController(IUserService userService, ILogger<UsersController> logger, IConfiguration configuration)
         {
             _userService = userService;
             _logger = logger;
+            _configuration = configuration;
 
         }
 
-        // GET api/<UsersController>/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<GetUserDTO>> Get(int id)
         {
-
             GetUserDTO user = await _userService.GetUserById(id);
-            if (user == null)
-                   return NoContent();
+            if (user == null) return NoContent();
             return Ok(user);
         }
-        // POST api/<UsersController>
-        [HttpPost]
-        public async Task<ActionResult<GetUserDTO>> Post([FromBody] UserDto user)
-        {
-            GetUserDTO _user =await _userService.addUser(user);
-            if (_user == null)
-            {
-                return BadRequest("סיסמא חלשה - נסה סיסמא שונה");
-            }
-            return CreatedAtAction(nameof(Get), new { id = _user.Id }, _user);
 
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<ActionResult> Post([FromBody] UserDto user)
+        {
+            string? token = await _userService.addUser(user);
+            if (token == null)
+                return BadRequest("סיסמא חלשה - נסה סיסמא שונה");
+
+            SetTokenCookie(token);
+            return Ok(new { message = "User created successfully" });
         }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<IEnumerable<GetUserDTO>>> GetAll()
+        {
+            var users = await _userService.GetAllUsersAsync();
+            return Ok(users);
+        }
+
 
         [HttpPost("Login")]
-        public async Task<ActionResult<GetUserDTO>> Login([FromBody] LoginDTO user)
+        [AllowAnonymous]
+        public async Task<ActionResult> Login([FromBody] LoginDTO user)
         {
-            GetUserDTO _user = await _userService.login(user);
-            if (_user == null)
+            string? token = await _userService.login(user);
+            if (token == null)
             {
-                _logger.LogInformation("Login failed: UserName={UserEmail},Password={Password}", user.UserEmail, user.Password);
-                return NoContent();
-
+                _logger.LogInformation("Login failed: UserName={UserEmail}", user.UserEmail);
+                return Unauthorized("פרטי התחברות שגויים");
             }
 
-            _logger.LogInformation("Login success: UserName={UserEmail},Password={Password}",
-            user.UserEmail,  user.Password);
-            return Ok(_user);
-
+            _logger.LogInformation("Login success: UserName={UserEmail}", user.UserEmail);
+            SetTokenCookie(token);
+            return Ok(new { message = "Login successful" });
         }
 
-      
-        // PUT api/<UsersController>/5
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Put(int id, [FromBody] UserDto user)
         {
-            _userService.updateUser(id,user);
+            _userService.updateUser(id, user);
             return Ok(user);
         }
 
+
+        private void SetTokenCookie(string token)
+        {
+            var expiresMinutes = double.Parse(_configuration["Jwt:ExpiresInMinutes"] ?? "60");
+            var isDev = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development";
+            Response.Cookies.Append("jwt", token, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = !isDev, // Only set Secure in non-development
+                SameSite = SameSiteMode.Strict,
+                //Expires = DateTimeOffset.UtcNow.AddMinutes(expiresMinutes)
+            });
+        }
+
+        [HttpPost("Logout")]
+        [Authorize]
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete("jwt");
+            return Ok(new { message = "Logged out" });
+        }
     }
 }

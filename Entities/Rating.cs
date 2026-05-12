@@ -9,6 +9,9 @@ namespace Entities
     public partial class Rating
     {
         public int RatingId { get; set; }
+        public int UserId { get; set; }
+        public int ProductId { get; set; }   
+        public int Value { get; set; }
         public string Host { get; set; }
         public string Method { get; set; }
         public string Path { get; set; }

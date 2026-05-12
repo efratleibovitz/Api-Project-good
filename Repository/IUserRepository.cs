@@ -9,5 +9,7 @@ namespace Repository
         Task<User?> GetUserById(int id);
         Task<User?> login(LoginDTO loginDto);
         Task UpdateUser(int id, UserDto userDto);
+        Task<IEnumerable<User>> GetAllUsersAsync();
+
     }
 }

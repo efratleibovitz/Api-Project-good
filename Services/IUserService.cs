@@ -1,14 +1,14 @@
-﻿using DTOs;
-using Entities;
+using DTOs;
 
 namespace Services
 {
     public interface IUserService
     {
-        Task<GetUserDTO> addUser(UserDto user);
+        Task<string?> addUser(UserDto user);
         Task<GetUserDTO> GetUserById(int id);
-        Task<GetUserDTO> login(LoginDTO loginDto);
+        Task<string?> login(LoginDTO loginDto);
         void updateUser(int id, UserDto user);
+        Task<IEnumerable<GetUserDTO>> GetAllUsersAsync();
 
     }
 }

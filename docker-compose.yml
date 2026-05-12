@@ -1,0 +1,73 @@
+# Docker Compose for WebApiShop Development Environment
+version: '3.8'
+
+services:
+  # WebApiShop API
+  webapishop-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      # - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=WebApiShop216328971;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;
+      - ConnectionStrings__DefaultConnection=Server=host.docker.internal;Database=WebApiShop216328971;Integrated Security=True;TrustServerCertificate=true;
+      - ConnectionStrings__Redis=redis:6379,password=Qq123!@#QQQ
+      - RedisOptions__Configuration=redis:6379,password=Qq123!@#QQQ
+      - Jwt__Key=WebApiShop_SuperSecret_JWT_Key_2024!
+      - Jwt__Issuer=WebApiShop
+      - Jwt__Audience=WebApiShopUsers
+      - Jwt__ExpiresInMinutes=60
+    depends_on:
+      - sqlserver
+      - redis
+    networks:
+      - webapishop-network
+    volumes:
+      - ./logs:/app/logs
+
+  # SQL Server Database
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong@Passw0rd
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    networks:
+      - webapishop-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    command: redis-server --requirepass Qq123!@#QQQ
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - webapishop-network
+
+  # Redis Commander (Redis GUI)
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=local:redis:6379:0:Qq123!@#QQQ
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+    networks:
+      - webapishop-network
+
+volumes:
+  sqlserver-data:
+  redis-data:
+
+networks:
+  webapishop-network:
+    driver: bridge
